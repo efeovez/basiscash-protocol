@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 
 import '../access/Operator.sol';
 import {IBoardroomV2} from '../boardroom/Boardroom.sol';
 
 contract MockBoardroom is IBoardroomV2, Operator {
     using SafeERC20 for IERC20;
+
+    constructor() Ownable(msg.sender) {}
 
     /* ========== STATE VARIABLES ========== */
 
@@ -24,7 +26,7 @@ contract MockBoardroom is IBoardroomV2, Operator {
         override
         returns (uint256)
     {
-        return uint256(_owner);
+        return uint256(uint160(_owner));
     }
 
     function rewardTokensAt(uint256 _index)
@@ -33,7 +35,7 @@ contract MockBoardroom is IBoardroomV2, Operator {
         override
         returns (address)
     {
-        return address(_index);
+        return address(uint160(_index));
     }
 
     function rewardTokensLength() external pure override returns (uint256) {
@@ -46,7 +48,7 @@ contract MockBoardroom is IBoardroomV2, Operator {
         override
         returns (address)
     {
-        return address(_index);
+        return address(uint160(_index));
     }
 
     function rewardPoolsLength() external pure override returns (uint256) {

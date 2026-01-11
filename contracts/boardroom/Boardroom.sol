@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import 'hardhat/console.sol';
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
-import {SafeMath} from '@openzeppelin/contracts/math/SafeMath.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
-import {EnumerableSet} from '@openzeppelin/contracts/utils/EnumerableSet.sol';
+import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import {EnumerableSet} from '@openzeppelin/contracts/utils/structs/EnumerableSet.sol';
 
 import {ITokenStore, TokenStoreWrapper} from './TokenStoreWrapper.sol';
 
@@ -103,7 +102,6 @@ contract BoardroomV2 is
     Ownable
 {
     using SafeERC20 for IERC20;
-    using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /* ================= DATA STRUCTURES ================= */
@@ -137,7 +135,7 @@ contract BoardroomV2 is
         address _cash,
         address _share,
         address _store
-    ) {
+    ) Ownable(msg.sender) {
         share = IERC20(_share);
         store = ITokenStore(_store);
 
@@ -293,7 +291,7 @@ contract BoardroomV2 is
         override
         returns (uint256)
     {
-        return history[_token].length.sub(1);
+        return history[_token].length - 1;
     }
 
     /**
@@ -338,9 +336,9 @@ contract BoardroomV2 is
         return
             store
                 .balanceOf(_director)
-                .mul(latestRPS.sub(storedRPS))
-                .div(1e18)
-                .add(seats[_token][_director].rewardEarned);
+                * (latestRPS - storedRPS)
+                / 1e18
+                + seats[_token][_director].rewardEarned;
     }
 
     /* ================= TXNS ================= */
@@ -412,7 +410,7 @@ contract BoardroomV2 is
 
                     uint256 prevRPS = getLastSnapshot(token).rewardPerShare;
                     uint256 nextRPS =
-                        prevRPS.add(amount.mul(1e18).div(store.totalSupply()));
+                        prevRPS + (amount * 1e18 / (store.totalSupply()));
 
                     BoardSnapshot memory newSnapshot =
                         BoardSnapshot({

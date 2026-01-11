@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
-import '@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol';
+import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol';
 
 import '../access/Operator.sol';
 
@@ -9,7 +9,7 @@ contract MockDai is ERC20Burnable, Operator {
     /**
      * @notice Constructs the Basis Cash ERC-20 contract.
      */
-    constructor() ERC20('DAI', 'DAI') {
+    constructor() ERC20('DAI', 'DAI') Ownable(msg.sender) {
         _mint(msg.sender, 10000 * 10**18);
     }
 

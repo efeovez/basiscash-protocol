@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
-import {SafeMath} from '@openzeppelin/contracts/math/SafeMath.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
 import {Operator} from '../access/Operator.sol';
 
@@ -60,7 +60,6 @@ interface ITokenStoreGov {
 }
 
 contract TokenStore is ITokenStore, ITokenStoreGov, Operator {
-    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     /* ================= STATES ================= */
@@ -72,7 +71,7 @@ contract TokenStore is ITokenStore, ITokenStoreGov, Operator {
 
     bool public emergency = false;
 
-    constructor(address _token) Operator() {
+    constructor(address _token) Operator() Ownable(msg.sender) {
         token = _token;
     }
 
@@ -138,8 +137,8 @@ contract TokenStore is ITokenStore, ITokenStoreGov, Operator {
         override
         onlyOperator
     {
-        _totalSupply = _totalSupply.add(_amount);
-        _balances[_owner] = _balances[_owner].add(_amount);
+        _totalSupply = _totalSupply + _amount;
+        _balances[_owner] = _balances[_owner] + _amount;
         IERC20(token).safeTransferFrom(_msgSender(), address(this), _amount);
 
         emit Deposit(_msgSender(), _owner, _amount);
@@ -154,8 +153,8 @@ contract TokenStore is ITokenStore, ITokenStoreGov, Operator {
         override
         onlyOperator
     {
-        _totalSupply = _totalSupply.sub(_amount);
-        _balances[_owner] = _balances[_owner].sub(_amount);
+        _totalSupply = _totalSupply - _amount;
+        _balances[_owner] = _balances[_owner] - _amount;
         IERC20(token).safeTransfer(_msgSender(), _amount);
 
         emit Withdraw(_msgSender(), _owner, _amount);

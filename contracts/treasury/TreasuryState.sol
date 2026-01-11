@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
@@ -40,9 +40,9 @@ abstract contract TreasuryState is Epoch {
 
     modifier checkOperator {
         require(
-            IBasisAsset(cash).operator() == address(this) &&
-                IBasisAsset(bond).operator() == address(this) &&
-                IBasisAsset(share).operator() == address(this),
+            IBasisAsset(cash).getOperator() == address(this) &&
+                IBasisAsset(bond).getOperator() == address(this) &&
+                IBasisAsset(share).getOperator() == address(this),
             'Treasury: need more permission'
         );
 

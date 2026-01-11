@@ -1,35 +1,45 @@
-import '@nomiclabs/hardhat-ethers';
-import '@nomiclabs/hardhat-etherscan';
-import 'hardhat-gas-reporter';
-import 'solidity-coverage';
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import dotenv from "dotenv";
 
-export default {
-  default: 'hardhat',
-  networks: {
-    hardhat: {},
-  },
+dotenv.config();
+
+const config: HardhatUserConfig = {
   solidity: {
-    version: '0.7.6',
+    version: "0.8.30",
     settings: {
+      viaIR: true,
       optimizer: {
         enabled: true,
         runs: 200,
       },
     },
   },
-  paths: {
-    sources: './contracts',
-    tests: './test',
-    cache: './build/cache',
-    artifacts: './build/artifacts',
-  },
+
   gasReporter: {
-    currency: 'USD',
     enabled: true,
+    currency: "USD",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    outputFile: "gas-report.txt",
+    noColors: true,
+    token: "S",
+    gasPrice: 55,
+    tokenPrice: "100",
   },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: '<api-key>',
+
+  networks: {
+    localhost: {
+      url: 'http://127.0.0.1:8545',
+      allowUnlimitedContractSize: true,
+      chainId: 31337
+    },
+
+    hardhat: {
+      // forking: {
+      //   url: "https://rpc.soniclabs.com",
+      // }
+    },
   },
 };
+
+export default config;

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import {ERC20} from '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
+import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
 import {IPool} from './IPool.sol';
 import {Operator} from '../access/Operator.sol';
@@ -14,7 +15,7 @@ contract PoolProxy is Operator, ERC20 {
     address public pool;
     uint256 public pid;
 
-    constructor() ERC20('Pool Proxy Token', 'PPT') {}
+    constructor() ERC20('Pool Proxy Token', 'PPT') Ownable(msg.sender) {}
 
     /* ================= GOV - OWNER ONLY ================= */
 

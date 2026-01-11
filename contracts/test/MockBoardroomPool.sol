@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
-import {Math} from '@openzeppelin/contracts/math/Math.sol';
-import {SafeMath} from '@openzeppelin/contracts/math/SafeMath.sol';
+import {SafeERC20} from '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import {Math} from '@openzeppelin/contracts/utils/math/Math.sol';
 
 import {IRewardPool} from '../boardroom/Boardroom.sol';
 
 contract MockBoardroomPool is IRewardPool {
-    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     address public token;
@@ -23,7 +21,7 @@ contract MockBoardroomPool is IRewardPool {
         bool _no
     ) {
         token = _token;
-        tokenPerCall = _amount.div(_slice);
+        tokenPerCall = _amount / _slice;
         no = _no;
     }
 

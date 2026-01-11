@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
+pragma solidity ^0.8.0;
 
-import {SafeMath} from '@openzeppelin/contracts/math/SafeMath.sol';
+import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
 import {Babylonian} from '../lib/Babylonian.sol';
 import {FixedPoint} from '../lib/FixedPoint.sol';
@@ -25,7 +25,6 @@ interface IOracle {
 // note that the price average is only guaranteed to be over at least 1 period, but may be over a longer period
 contract Oracle is Epoch {
     using FixedPoint for *;
-    using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
 

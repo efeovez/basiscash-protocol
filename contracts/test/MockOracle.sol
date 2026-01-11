@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.8.0;
-
-import '@openzeppelin/contracts/math/SafeMath.sol';
+pragma solidity ^0.8.0;
 
 import '../oracle/Oracle.sol';
 
 contract MockOracle is IOracle {
-    using SafeMath for uint256;
-
     uint256 epoch;
     uint256 period;
 
@@ -46,11 +42,11 @@ contract MockOracle is IOracle {
     }
 
     function getNextEpoch() public view returns (uint256) {
-        return epoch.add(1);
+        return epoch + 1;
     }
 
     function nextEpochPoint() public view returns (uint256) {
-        return startTime.add(getNextEpoch().mul(period));
+        return startTime + (getNextEpoch() * period);
     }
 
     // params
@@ -81,7 +77,7 @@ contract MockOracle is IOracle {
         override
         returns (uint256)
     {
-        return price.mul(amountIn).div(1e18);
+        return price * amountIn / 1e18;
     }
 
     event Updated(uint256 price0CumulativeLast, uint256 price1CumulativeLast);
